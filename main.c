@@ -15,8 +15,9 @@ int main(int argc, char const *argv[])
 	List_node *list_node = create_list_node(7);
 	print_dht(list_node);
 
+	add_value(list_node, "testrrghyjchgrsf");
 	//getch();
 
-	endwin();
+	//endwin();
 	return 0;
 }
