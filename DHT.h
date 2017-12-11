@@ -23,7 +23,7 @@ typedef struct Node
 
 void create_node(List_node*, int, int);
 void add_node_to_list(Node*, Node*);
-Node* search_node_for_insert(List_node*, int);
+Node* search_key_in_node(List_node*, int);
 
 
 typedef struct Hash_table
@@ -38,6 +38,7 @@ void create_hash_table(Node*, int, char*);
 int hash(char* value);
 void add_value(List_node*, char*);
 void add_node_hash_table(Node*);
+Hash_table* search_key_in_table(Node*, int);
 
 
 void print_dht(List_node*);

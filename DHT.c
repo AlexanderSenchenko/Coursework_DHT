@@ -56,7 +56,7 @@ void add_node_to_list(Node *first_node, Node* node)
 	}
 }
 
-Node* search_node_for_insert(List_node *list_node, int key)
+Node* search_key_in_node(List_node *list_node, int key)
 {
 	Node *node = list_node->first_node;
 
@@ -64,17 +64,35 @@ Node* search_node_for_insert(List_node *list_node, int key)
 	{
 		if (node->id != 0) {
 			if ((node->id - node->border) < key && (node->id + node->border) > key) {
-				return node;
+				if (search_key_in_table(node, key) == NULL) {
+					return node;
+				} else {
+					printf("Ключ уже есть\n");
+					return NULL;
+				}
 			}
 		} else {
 			//для узла 0
 			if ((999 - node->border) < key && (node->id + node->border) >= key) {
-				return node;
+				if (search_key_in_table(node, key) == NULL) {
+					return node;
+				} else {
+					return NULL;
+				}
 			}
 		}
 		node = node->right;
 	}
 	return NULL;
+}
+
+Hash_table* search_key_in_table(Node* node, int key)
+{
+	Hash_table* routing_table = node->routing_table;
+	while (routing_table != NULL && routing_table->key != key) {
+		routing_table = routing_table->next;
+	}
+	return routing_table;
 }
 
 //Hash table
@@ -119,7 +137,7 @@ void add_value(List_node *list_node, char *value)
 	int key = hash(value);
 	printf("%d\n", key);
 
-	Node* node = search_node_for_insert(list_node, key);
+	Node* node = search_key_in_node(list_node, key);
 	if (node == NULL) {
 		printf("Error\n");
 		return;
