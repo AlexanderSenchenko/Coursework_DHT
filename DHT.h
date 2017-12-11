@@ -14,40 +14,30 @@ List_node *create_list_node(int);
 
 typedef struct Node
 {
-	//позиция на окружности(хешь)
-	float id;
-	//struct Keyspace *keyspace;
-	float border;
+	int id;
+	int border;
 	struct Node *right;
 	struct Node *left;
 	struct Hash_table *routing_table;
 } Node;
 
-void create_node(List_node*, float, float);
+void create_node(List_node*, int, int);
 void add_node_to_list(Node*, Node*);
+Node* search_node_for_insert(List_node*, int);
 
 
 typedef struct Hash_table
 {
-	//позиция на окружности(хешь)
-	float key;
+	int key;
 	char *value;
 	struct Hash_table *next;
 	struct Hash_table *parent;
 } Hash_table;
 
-void create_hash_table(Node*);
+void create_hash_table(Node*, int, char*);
 int hash(char* value);
 void add_value(List_node*, char*);
-//void add_node_hash_table(Node*)
-
-
-typedef struct Keyspace
-{
-	//позиция на окружности(хешь) за которую отвечает узел
-	float border;
-} Keyspace;
-
+void add_node_hash_table(Node*);
 
 
 void print_dht(List_node*);
