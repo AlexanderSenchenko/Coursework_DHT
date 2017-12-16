@@ -16,11 +16,13 @@ int main(int argc, char const *argv[])
 	print_dht(list_node);
 
 	add_value(list_node, "main");
-	add_value(list_node, "test");
+	add_value(list_node, "tezz");
 	add_value(list_node, "main_te");
 	add_value(list_node, "my_test");
 	add_value(list_node, "tesm1");
 	add_value(list_node, "tee1");
+	add_value(list_node, "t2");
+	add_value(list_node, "t7");
 
 	print_dht(list_node);
 	//getch();

@@ -17,8 +17,8 @@ List_node *create_list_node(int number)
 	for (int i = 0; i < number; i++)
 	{
 		if (border == 0)
-			border = ((999 / number) / 2);
-		space = (999 / number) * i;
+			border = ((KEYSPACE / number) / 2);
+		space = (KEYSPACE / number) * i;
 		create_node(list_node, space, border);
 	}
 	list_node->number_node = number;
@@ -59,26 +59,21 @@ void add_node_to_list(Node *first_node, Node* node)
 Node* search_key_in_node(List_node *list_node, int key)
 {
 	Node *node = list_node->first_node;
+	int node_id, right_node_id;
 
 	for (int i = 0; i < list_node->number_node; i++)
 	{
-		if (node->id != 0) {
-			if ((node->id - node->border) < key && (node->id + node->border) > key) {
-				if (search_key_in_table(node, key) == NULL) {
-					return node;
-				} else {
-					printf("Ключ уже есть\n");
-					return NULL;
-				}
-			}
-		} else {
-			//для узла 0
-			if ((999 - node->border) < key && (node->id + node->border) >= key) {
-				if (search_key_in_table(node, key) == NULL) {
-					return node;
-				} else {
-					return NULL;
-				}
+		node_id = node->id;
+		right_node_id = node->right->id;
+		if (right_node_id == 0)
+			right_node_id = KEYSPACE;
+
+		if (node_id <= key && right_node_id > key) {
+			if (search_key_in_table(node, key) == NULL) {
+				return node;
+			} else {
+				printf("Ключ уже есть\n");
+				return NULL;
 			}
 		}
 		node = node->right;
@@ -88,35 +83,35 @@ Node* search_key_in_node(List_node *list_node, int key)
 
 Hash_table* search_key_in_table(Node* node, int key)
 {
-	Hash_table* routing_table = node->routing_table;
-	while (routing_table != NULL && routing_table->key != key) {
-		routing_table = routing_table->next;
+	Hash_table* hash_table = node->hash_table;
+	while (hash_table != NULL && hash_table->key != key) {
+		hash_table = hash_table->next;
 	}
-	return routing_table;
+	return hash_table;
 }
 
 //Hash table
 void create_node_hash_table(Node *node, int key, char* value)
 {
-	Hash_table *routing_table = node->routing_table, *parent;
+	Hash_table *hash_table = node->hash_table, *parent;
 	
-	while (routing_table != NULL) {
-		parent = routing_table;
-		routing_table = routing_table->next;
+	while (hash_table != NULL) {
+		parent = hash_table;
+		hash_table = hash_table->next;
 	}
 
-	routing_table = malloc(sizeof(Hash_table));
-	routing_table->key = key;
-	routing_table->value = value;
+	hash_table = malloc(sizeof(Hash_table));
+	hash_table->key = key;
+	hash_table->value = value;
 
-	if (node->routing_table == NULL) {
-		routing_table->next = NULL;
-		routing_table->parent = NULL;
-		node->routing_table = routing_table;
+	if (node->hash_table == NULL) {
+		hash_table->next = NULL;
+		hash_table->parent = NULL;
+		node->hash_table = hash_table;
 	} else {
-		parent->next = routing_table;
-		routing_table->parent = parent;
-		routing_table->next = NULL;
+		parent->next = hash_table;
+		hash_table->parent = parent;
+		hash_table->next = NULL;
 	}
 }
 
@@ -128,7 +123,7 @@ int hash(char* value)
 		sum += (value[i] * i);
 	}
 	printf("%d\n", sum);
-	sum = sum % 999;
+	sum = sum % KEYSPACE;
 	return sum;
 }
 
@@ -143,7 +138,6 @@ void add_value(List_node *list_node, char *value)
 		return;
 	}
 	create_node_hash_table(node, key, value);
-
 }
 
 //Print
@@ -166,12 +160,12 @@ void print_dht(List_node* list_node)
 		printf("%d\t", node->id);
 		printf("%d\t", node->border);
 
-		if (node->routing_table != NULL) {
+		if (node->hash_table != NULL) {
 			printf("\n");
-			Hash_table *routing_table = node->routing_table;
-			while (routing_table != NULL) {
-				printf("%d\t%s\n", routing_table->key, routing_table->value);
-				routing_table = routing_table->next;
+			Hash_table *hash_table = node->hash_table;
+			while (hash_table != NULL) {
+				printf("%d\t%s\n", hash_table->key, hash_table->value);
+				hash_table = hash_table->next;
 			}
 		}
 		printf("\n");

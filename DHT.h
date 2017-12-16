@@ -18,7 +18,7 @@ typedef struct Node
 	int border;
 	struct Node *right;
 	struct Node *left;
-	struct Hash_table *routing_table;
+	struct Hash_table *hash_table;
 } Node;
 
 void create_node(List_node*, int, int);
