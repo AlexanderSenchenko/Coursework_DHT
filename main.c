@@ -17,9 +17,13 @@ int main(int argc, char *argv[])
 	add_value(list_node, "t2");
 	add_value(list_node, "t7");
 
-	//delete_node(list_node, list_node->first_node);
-
 	print_dht(list_node);
+
+	delete_node(list_node, 1);
+	print_dht(list_node);
+
+	//delete_node(list_node, 1);
+	//print_dht(list_node);
 
 	/*info_first_node(list_node);
 

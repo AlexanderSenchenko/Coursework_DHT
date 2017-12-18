@@ -47,6 +47,7 @@ void add_value(List_node *list_node, char *value)
 		return;
 	}
 	create_node_hash_table(node, key, value);
+	create_node_hash_table(node->left, key, value);
 }
 
 Hash_table* search_key_in_table(Node* node, int key)
