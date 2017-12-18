@@ -1,9 +1,110 @@
 #include "DHT.h"
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 
-#define KEYSPACE 999
+void menu()
+{
+	List_node *list_node = NULL;
+	int act;
+
+	while (act != 10) {
+		printf("\n1) Create DHT\n");
+		printf("2) Print DHT\n");
+		printf("3) Delete DHT\n");
+		printf("4) Info first node\n");
+		printf("5) Change first node DHT\n");
+		printf("6) Add node in DHT\n");
+		printf("7) Delete node from DHT\n");
+		printf("8) Add value\n");
+		printf("9) Search value\n");
+		printf("10) Exit\n");
+
+		printf("Input act: ");
+		scanf("%d", &act);
+		printf("\n");
+
+		switch (act)
+		{
+			case 1:
+				if (list_node == NULL) {
+					int number;
+					printf("Input the number of nodes: ");
+					scanf("%d", &number);
+					list_node = create_list_node(number);
+				} else {
+					printf("Error. DHT already exists.\n");
+				}
+				break;
+			case 2:
+				if (list_node != NULL) {
+					print_dht(list_node);
+				} else {
+					printf("Error. DHT not exists.\n");
+				}
+				break;
+			case 3:
+				if (list_node != NULL) {
+					delete_dht(list_node);
+				} else {
+					printf("Error. DHT not exists.\n");
+				}
+				break;
+			case 4:
+				if (list_node != NULL) {
+					info_first_node(list_node);
+				} else {
+					printf("Error. DHT not exists.\n");
+				}
+				break;
+			case 5:
+				if (list_node != NULL) {
+					int num;
+					printf("Input the node number: ");
+					scanf("%d", &num);
+					change_first_node(list_node, num);
+				} else {
+					printf("Error. DHT not exists.\n");
+				}
+				break;
+			case 6:
+				if (list_node != NULL) {
+					//
+				} else {
+					printf("Error. DHT not exists.\n");
+				}
+				break;
+			case 7:
+				if (list_node != NULL) {
+					//
+				} else {
+					printf("Error. DHT not exists.\n");
+				}
+				break;
+			case 8:
+				if (list_node != NULL) {
+					//char *value = malloc(sizeof);
+					//fgets(value, 100, stdin);
+					//add_value(list_node, value);
+				} else {
+					printf("Error. DHT not exists.\n");
+				}
+				break;
+			case 9:
+				if (list_node != NULL) {
+					//char *value;
+					//fgets(value, 100, stdin);
+					//search_value(list_node, value);
+				} else {
+					printf("Error. DHT not exists.\n");
+				}
+				break;
+			case 10:
+				printf("Exit\n");
+				break;
+			default:
+				printf("Act not found.\n");
+		}
+	}
+
+}
 
 //List_node
 List_node *create_list_node(int number)
@@ -26,6 +127,67 @@ List_node *create_list_node(int number)
 	return list_node;
 }
 
+void change_first_node(List_node *list_node, int number)
+{
+	for (int i = 0; i < number; ++i)
+	{
+		list_node->first_node = list_node->first_node->right;
+	}
+}
+
+void info_first_node(List_node* list_node)
+{
+	Node* node = list_node->first_node;
+
+	printf("///First node///\n");
+	printf("Id %d\t", node->id);
+
+	if (node->hash_table != NULL) {
+		printf("\nHash_table\n");
+		Hash_table *hash_table = node->hash_table;
+		while (hash_table != NULL) {
+			printf("%d\t%s\n", hash_table->key, hash_table->value);
+			hash_table = hash_table->next;
+		}
+	}
+	printf("\n");
+
+	if (node->routing_table != NULL) {
+		printf("\nRouting table\n");
+		Routing_table *routing_table = node->routing_table;
+		while (routing_table != NULL) {
+			printf("%p\t%d\n", routing_table->node, routing_table->key);
+		}
+	}
+	printf("\n");
+}
+
+void search_value(List_node* list_node, char* value)
+{
+	int key = hash(value);
+	Node *node = search_key_in_node(list_node, key, 2);
+	if (node == NULL) {
+		printf("Value not found\n");
+		return;
+	}
+	printf("///Search value///\nNode: %p\nId: %d\n", node, node->id);
+}
+
+void delete_dht(List_node* list_node)
+{
+	Node* node = list_node->first_node;
+	list_node->first_node = node->right;
+
+	while (node != NULL) {
+		free_node(node);
+		node = list_node->first_node;
+		if (node != NULL)
+			list_node->first_node = node->right;
+	}
+	list_node = NULL;
+	//free(list_node);
+}
+
 
 //Node
 void create_node(List_node *list_node, int space, int border)
@@ -38,6 +200,8 @@ void create_node(List_node *list_node, int space, int border)
 	node->left = node;
 	node->id = space;
 	node->border = border;
+	node->hash_table = NULL;
+	node->routing_table = NULL;
 
 	if (list_node->first_node == NULL) {
 		list_node->first_node = node;
@@ -56,7 +220,7 @@ void add_node_to_list(Node *first_node, Node* node)
 	}
 }
 
-Node* search_key_in_node(List_node *list_node, int key)
+Node* search_key_in_node(List_node *list_node, int key, int act)
 {
 	Node *node = list_node->first_node;
 	int node_id, right_node_id;
@@ -71,9 +235,11 @@ Node* search_key_in_node(List_node *list_node, int key)
 		if (node_id <= key && right_node_id > key) {
 			if (search_key_in_table(node, key) == NULL) {
 				return node;
-			} else {
-				printf("Ключ уже есть\n");
+			} else if (act == 1) {
+				printf("Key already exists\n");
 				return NULL;
+			} else if (act == 2) {
+				return node;
 			}
 		}
 		node = node->right;
@@ -81,63 +247,43 @@ Node* search_key_in_node(List_node *list_node, int key)
 	return NULL;
 }
 
-Hash_table* search_key_in_table(Node* node, int key)
+void free_node(Node *node)
 {
 	Hash_table* hash_table = node->hash_table;
-	while (hash_table != NULL && hash_table->key != key) {
-		hash_table = hash_table->next;
-	}
-	return hash_table;
-}
 
-//Hash table
-void create_node_hash_table(Node *node, int key, char* value)
-{
-	Hash_table *hash_table = node->hash_table, *parent;
-	
+	if (node->right != NULL)
+		node->right->left = node->left;
+	if (node->left != NULL) 
+		node->left->right = node->right;
+
+	node->right = NULL;
+	node->left = NULL;
+
+	if (hash_table != NULL)
+		node->hash_table = hash_table->next;
+
+	if (node->hash_table != NULL)
+		node->hash_table->parent = NULL;
+
 	while (hash_table != NULL) {
-		parent = hash_table;
-		hash_table = hash_table->next;
-	}
+		free_hash_table(hash_table);
 
-	hash_table = malloc(sizeof(Hash_table));
-	hash_table->key = key;
-	hash_table->value = value;
+		hash_table = node->hash_table;
 
-	if (node->hash_table == NULL) {
-		hash_table->next = NULL;
-		hash_table->parent = NULL;
-		node->hash_table = hash_table;
-	} else {
-		parent->next = hash_table;
-		hash_table->parent = parent;
-		hash_table->next = NULL;
+		if (hash_table != NULL)
+			node->hash_table = hash_table->next;
+
+		if (node->hash_table != NULL)
+			node->hash_table->parent = NULL;
 	}
+	//free(node);
 }
 
-int hash(char* value)
+void delete_node(List_node* list_node, Node* node)
 {
-	int sum = 0;
-	for (int i = 0; i < strlen(value); i++)
-	{
-		sum += (value[i] * i);
-	}
-	printf("%d\n", sum);
-	sum = sum % KEYSPACE;
-	return sum;
-}
-
-void add_value(List_node *list_node, char *value)
-{
-	int key = hash(value);
-	printf("%d\n", key);
-
-	Node* node = search_key_in_node(list_node, key);
-	if (node == NULL) {
-		printf("Error\n");
-		return;
-	}
-	create_node_hash_table(node, key, value);
+	change_first_node(list_node, 1);
+	free_node(node);
+	list_node->number_node--;
 }
 
 //Print
@@ -145,14 +291,9 @@ void print_dht(List_node* list_node)
 {
 	Node* node = list_node->first_node;
 
-/*	move(1, 0);
-	printw("Left");
-	move(2, 0);
-	printw("Node");
-	move(3, 0);
-	printw("Right");
-*/
-	for (int i = 0; i < list_node->number_node; i++)
+	printf("///Print DHT///\n");
+
+	for (int i = 0; i < list_node->number_node && node != NULL; i++)
 	{
 		printf("%p\t", node->left);
 		printf("%p\t", node);
@@ -161,24 +302,22 @@ void print_dht(List_node* list_node)
 		printf("%d\t", node->border);
 
 		if (node->hash_table != NULL) {
-			printf("\n");
+			printf("\nHash_table\n");
 			Hash_table *hash_table = node->hash_table;
 			while (hash_table != NULL) {
 				printf("%d\t%s\n", hash_table->key, hash_table->value);
 				hash_table = hash_table->next;
 			}
 		}
-		printf("\n");
 
-/*		move(0, i * 10 + 10);
-		printw("Node-%d", i);
-		move(1, i * 10 + 10);
-		printw("%p", node->left);
-		move(2, i * 10 + 10);
-		printw("%p", node);
-		move(3, i * 10 + 10);
-		printw("%p", node->right);
-*/		
+		if (node->routing_table != NULL) {
+			printf("\nRouting table\n");
+			Routing_table *routing_table = node->routing_table;
+			while (routing_table != NULL) {
+				printf("%p\t%d\n", routing_table->node, routing_table->key);
+			}
+		}
+		printf("\n");	
 		node = node->right;
 	}
 }

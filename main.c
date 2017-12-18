@@ -1,16 +1,9 @@
 #include <stdio.h>
 #include "DHT.h"
 
-int main(int argc, char const *argv[])
+int main(int argc, char *argv[])
 {
-	/*initscr();
-	curs_set(0);
-	//cbreak();
-	keypad(stdscr, true);
-	noecho();
-	//nodelay(stdscr, true);
-*/
-	
+	//menu();
 
 	List_node *list_node = create_list_node(7);
 	print_dht(list_node);
@@ -24,9 +17,16 @@ int main(int argc, char const *argv[])
 	add_value(list_node, "t2");
 	add_value(list_node, "t7");
 
-	print_dht(list_node);
-	//getch();
+	//delete_node(list_node, list_node->first_node);
 
-	//endwin();
+	print_dht(list_node);
+
+	/*info_first_node(list_node);
+
+	change_first_node(list_node, 2);
+	info_first_node(list_node);*/
+	
+
+	search_value(list_node, argv[1]);
 	return 0;
 }
