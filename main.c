@@ -1,4 +1,3 @@
-#include <stdio.h>
 #include "DHT.h"
 
 int main(int argc, char *argv[])
@@ -29,8 +28,26 @@ int main(int argc, char *argv[])
 
 	change_first_node(list_node, 2);
 	info_first_node(list_node);*/
-	
+	add_node(list_node);
+	print_dht(list_node);
 
-	search_value(list_node, argv[1]);
+	add_node(list_node);
+	print_dht(list_node);
+
+	add_node(list_node);
+	print_dht(list_node);
+
+	add_node(list_node);
+	print_dht(list_node);
+
+	add_node(list_node);
+	print_dht(list_node);
+	//add_node(list_node);
+	//print_dht(list_node);
+	
+	//add_node(list_node);
+	//print_dht(list_node);
+
+	//search_value(list_node, argv[1]);
 	return 0;
 }

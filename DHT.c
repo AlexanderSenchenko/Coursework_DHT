@@ -56,7 +56,7 @@ void menu()
 				break;
 			case 5:
 				if (list_node != NULL) {
-					change_first_node(list_node, list_node->first_node->right);
+					//change_first_node(list_node, list_node->first_node->right);
 				} else {
 					printf("Error. DHT not exists.\n");
 				}
@@ -124,7 +124,7 @@ List_node *create_list_node(int number)
 	return list_node;
 }
 
-void change_first_node(List_node *list_node, Node *node)
+void change_first_node(List_node* list_node, Node* node)
 {
 	/*for (int i = 0; i < number; ++i)
 	{
@@ -146,15 +146,6 @@ void info_first_node(List_node* list_node)
 		while (hash_table != NULL) {
 			printf("%d\t%s\n", hash_table->key, hash_table->value);
 			hash_table = hash_table->next;
-		}
-	}
-	printf("\n");
-
-	if (node->routing_table != NULL) {
-		printf("\nRouting table\n");
-		Routing_table *routing_table = node->routing_table;
-		while (routing_table != NULL) {
-			printf("%p\t%d\n", routing_table->node, routing_table->key);
 		}
 	}
 	printf("\n");
@@ -207,9 +198,14 @@ void delete_node(List_node* list_node, int num)
 	while (hash_table != NULL) {
 		int node_id = node->id;
 		int right_node_id = node->right->id;
+
+		if (node_id > right_node_id)
+			right_node_id = KEYSPACE;
+
 		if (node_id <= hash_table->key && right_node_id > hash_table->key) {
 			create_node_hash_table(left, hash_table->key, hash_table->value);
 		}
+
 		hash_table = hash_table->next;
 	}
 }
@@ -227,12 +223,16 @@ void add_node(List_node* list_node)
 
 	space = right_node_id - node_id;
 
-	for (int i = 0; i < list_node->number_node; i++) {
+	for (int i = 0; i < list_node->number_node; i++)
+	{
 		node_id_next = node->right->id;
 		right_node_id_next = node->right->right->id;
+
 		if (node_id_next > right_node_id_next)
 			right_node_id_next = KEYSPACE;
+
 		space_next = right_node_id_next - node_id_next;
+
 		if (space < space_next) {
 			space = space_next;
 			first = node->right;
@@ -242,6 +242,75 @@ void add_node(List_node* list_node)
 
 	change_first_node(list_node, first);
 	create_node(list_node, space / 2, space);
+
+	node = first->left->left;
+	Hash_table* hash_table = node->hash_table;
+	//Hash_table* hash_table_next = node->right->hash_table;
+	while (hash_table != NULL) {
+		node_id = node->id;
+		right_node_id = node->right->id;
+
+		node_id_next = node->right->id;
+		right_node_id_next = node->right->right->id;
+
+		if (node_id > right_node_id)
+			right_node_id = KEYSPACE;
+
+		if (node_id_next > right_node_id_next)
+			right_node_id = KEYSPACE;
+
+		/*if (node_id <= hash_table->key && right_node_id > hash_table->key) {
+			create_node_hash_table(node->right, hash_table->key, hash_table->value);
+		} else if (node_id_next <= hash_table_next->key && right_node_id_next > hash_table_next->key) {
+			if (hash_table_next->parent != NULL) 
+				hash_table_next->parent->next = hash_table_next->next;
+
+			if (hash_table_next->next != NULL)
+				hash_table_next->next->parent = hash_table_next->parent;
+
+			add_nht_node(node->right, hash_table_next);
+		}*/
+		if (right_node_id <= hash_table->key) {
+			create_node_hash_table(node->right, hash_table->key, hash_table->value);
+			if (node->right->right->id <= hash_table->key)
+				delete_nht(node, hash_table);
+		}
+		hash_table = hash_table->next;
+		//hash_table_next = hash_table_next->next;
+	}
+
+	/*hash_table = node->hash_table;
+	while (hash_table != NULL) {
+		node_id = node->id;
+		right_node_id = node->right->id;
+		node_id_next = node->right->id;
+		right_node_id_next = node->right->right->id;
+
+		if (node_id > right_node_id)
+			right_node_id = KEYSPACE;
+
+		if () 
+
+		}
+		hash_table = hash_table->next;
+	}*/
+
+	/*node = first;
+	hash_table = node->hash_table;
+	while (hash_table != NULL) {
+		node_id = node->id;
+		right_node_id = node->right->id;
+
+		if (node_id > right_node_id)
+			right_node_id = KEYSPACE;
+
+		if (node_id <= hash_table->key && right_node_id > hash_table->key) {
+			create_node_hash_table(node->left, hash_table->key, hash_table->value);
+		}
+		hash_table = hash_table->next;
+	}*/
+
+	list_node->number_node++;
 }
 
 //Node
@@ -256,7 +325,6 @@ void create_node(List_node *list_node, int space, int border)
 	node->id = space;
 	node->border = border;
 	node->hash_table = NULL;
-	node->routing_table = NULL;
 
 	if (list_node->first_node == NULL) {
 		list_node->first_node = node;
@@ -339,7 +407,7 @@ void print_dht(List_node* list_node)
 {
 	Node* node = list_node->first_node;
 
-	printf("///Print DHT///\n");
+	printf("\n///Print DHT///\n");
 
 	for (int i = 0; i < list_node->number_node && node != NULL; i++)
 	{
@@ -355,14 +423,6 @@ void print_dht(List_node* list_node)
 			while (hash_table != NULL) {
 				printf("%d\t%s\n", hash_table->key, hash_table->value);
 				hash_table = hash_table->next;
-			}
-		}
-
-		if (node->routing_table != NULL) {
-			printf("\nRouting table\n");
-			Routing_table *routing_table = node->routing_table;
-			while (routing_table != NULL) {
-				printf("%p\t%d\n", routing_table->node, routing_table->key);
 			}
 		}
 		printf("\n");	

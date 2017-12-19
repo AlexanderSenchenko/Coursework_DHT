@@ -63,5 +63,39 @@ void free_hash_table(Hash_table* hash_table)
 {
 	hash_table->next = NULL;
 	hash_table->parent = NULL;
+	//free(hash_table->value);
 	free(hash_table);
+}
+
+void add_nht_node(Node* node, Hash_table* hash_table)
+{
+	Hash_table* node_hash_table = node->hash_table;
+	while (node_hash_table != NULL) {
+		node_hash_table = node_hash_table->next;
+	}
+
+	hash_table->parent = node_hash_table;
+	hash_table->next = NULL;
+	node_hash_table->next = hash_table;
+}
+
+void delete_nht(Node* node, Hash_table* hash_table)
+{
+	if (hash_table->parent != NULL)
+		hash_table->parent->next = hash_table->next;
+
+	if (hash_table->next != NULL)
+		hash_table->next->parent = hash_table->parent;
+
+	if (hash_table->next == NULL && hash_table->parent == NULL)
+		node->hash_table = NULL;
+
+	/*if (hash_table != NULL)
+		free(hash_table->value);*/
+
+	hash_table->next = NULL;
+	hash_table->parent = NULL;
+
+	if (hash_table != NULL)
+		free(hash_table);
 }

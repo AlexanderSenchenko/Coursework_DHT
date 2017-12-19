@@ -16,14 +16,6 @@ typedef struct List_node
 	int number_node;
 } List_node;
 
-List_node *create_list_node(int);
-void change_first_node(List_node*, Node*);
-void info_first_node(List_node*);
-void search_value(List_node*, char*);
-void delete_dht(List_node*);
-void delete_node(List_node*, int);
-void add_node(List_node*);
-
 typedef struct Node
 {
 	int id;
@@ -31,20 +23,7 @@ typedef struct Node
 	struct Node *right;
 	struct Node *left;
 	struct Hash_table *hash_table;
-	struct Routing_table *routing_table;
 } Node;
-
-void create_node(List_node*, int, int);
-void add_node_to_list(Node*, Node*);
-Node* search_key_in_node(List_node*, int, int);
-void free_node(Node*);
-
-typedef struct Routing_table
-{
-	int key;
-	struct Node *node;
-} Routing_table;
-
 
 typedef struct Hash_table
 {
@@ -54,12 +33,29 @@ typedef struct Hash_table
 	struct Hash_table *parent;
 } Hash_table;
 
+List_node *create_list_node(int);
+void change_first_node(List_node*, Node*);
+void info_first_node(List_node*);
+void search_value(List_node*, char*);
+void delete_dht(List_node*);
+void delete_node(List_node*, int);
+void add_node(List_node*);
+
+
+void create_node(List_node*, int, int);
+void add_node_to_list(Node*, Node*);
+Node* search_key_in_node(List_node*, int, int);
+void free_node(Node*);
+
+
 void create_node_hash_table(Node*, int, char*);
 int hash(char* value);
 void add_value(List_node*, char*);
 void add_node_hash_table(Node*);
 Hash_table* search_key_in_table(Node*, int);
 void free_hash_table(Hash_table*);
+void add_nht_node(Node*, Hash_table*);
+void delete_nht(Node*, Hash_table*);
 
 
 void print_dht(List_node*);
