@@ -1,2 +1,2 @@
 all:
-	gcc -Wall -g *.c -o main -lncurses
+	gcc -Wall -g *.c -o main

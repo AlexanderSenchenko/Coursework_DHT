@@ -1,109 +1,5 @@
 #include "DHT.h"
 
-void menu()
-{
-	List_node *list_node = NULL;
-	int act;
-
-	while (act != 10) {
-		printf("\n1) Create DHT\n");
-		printf("2) Print DHT\n");
-		printf("3) Delete DHT\n");
-		printf("4) Info first node\n");
-		printf("5) Change first node DHT\n");
-		printf("6) Add node in DHT\n");
-		printf("7) Delete node from DHT\n");
-		printf("8) Add value\n");
-		printf("9) Search value\n");
-		printf("10) Exit\n");
-
-		printf("Input act: ");
-		scanf("%d", &act);
-		printf("\n");
-
-		switch (act)
-		{
-			case 1:
-				if (list_node == NULL) {
-					int number;
-					printf("Input the number of nodes: ");
-					scanf("%d", &number);
-					list_node = create_list_node(number);
-				} else {
-					printf("Error. DHT already exists.\n");
-				}
-				break;
-			case 2:
-				if (list_node != NULL) {
-					print_dht(list_node);
-				} else {
-					printf("Error. DHT not exists.\n");
-				}
-				break;
-			case 3:
-				if (list_node != NULL) {
-					delete_dht(list_node);
-				} else {
-					printf("Error. DHT not exists.\n");
-				}
-				break;
-			case 4:
-				if (list_node != NULL) {
-					info_first_node(list_node);
-				} else {
-					printf("Error. DHT not exists.\n");
-				}
-				break;
-			case 5:
-				if (list_node != NULL) {
-					//change_first_node(list_node, list_node->first_node->right);
-				} else {
-					printf("Error. DHT not exists.\n");
-				}
-				break;
-			case 6:
-				if (list_node != NULL) {
-					//
-				} else {
-					printf("Error. DHT not exists.\n");
-				}
-				break;
-			case 7:
-				if (list_node != NULL) {
-					//
-				} else {
-					printf("Error. DHT not exists.\n");
-				}
-				break;
-			case 8:
-				if (list_node != NULL) {
-					//char *value = malloc(sizeof);
-					//fgets(value, 100, stdin);
-					//add_value(list_node, value);
-				} else {
-					printf("Error. DHT not exists.\n");
-				}
-				break;
-			case 9:
-				if (list_node != NULL) {
-					//char *value;
-					//fgets(value, 100, stdin);
-					//search_value(list_node, value);
-				} else {
-					printf("Error. DHT not exists.\n");
-				}
-				break;
-			case 10:
-				printf("Exit\n");
-				break;
-			default:
-				printf("Act not found.\n");
-		}
-	}
-
-}
-
-//List_node
 List_node *create_list_node(int number)
 {
 	int border = 0, space;
@@ -126,10 +22,6 @@ List_node *create_list_node(int number)
 
 void change_first_node(List_node* list_node, Node* node)
 {
-	/*for (int i = 0; i < number; ++i)
-	{
-		list_node->first_node = list_node->first_node->right;
-	}*/
 	list_node->first_node = node;
 }
 
@@ -137,7 +29,7 @@ void info_first_node(List_node* list_node)
 {
 	Node* node = list_node->first_node;
 
-	printf("///First node///\n");
+	printf("\n///First node///\n");
 	printf("Id %d\t", node->id);
 
 	if (node->hash_table != NULL) {
@@ -159,7 +51,7 @@ void search_value(List_node* list_node, char* value)
 		printf("Value not found\n");
 		return;
 	}
-	printf("///Search value///\nNode: %p\nId: %d\n", node, node->id);
+	printf("\n///Search value///\nNode: %p\nId: %d\n", node, node->id);
 }
 
 void delete_dht(List_node* list_node)
@@ -174,7 +66,6 @@ void delete_dht(List_node* list_node)
 			list_node->first_node = node->right;
 	}
 	list_node = NULL;
-	//free(list_node);
 }
 
 void delete_node(List_node* list_node, int num)
@@ -245,7 +136,6 @@ void add_node(List_node* list_node)
 
 	node = first->left->left;
 	Hash_table* hash_table = node->hash_table;
-	//Hash_table* hash_table_next = node->right->hash_table;
 	while (hash_table != NULL) {
 		node_id = node->id;
 		right_node_id = node->right->id;
@@ -259,173 +149,13 @@ void add_node(List_node* list_node)
 		if (node_id_next > right_node_id_next)
 			right_node_id = KEYSPACE;
 
-		/*if (node_id <= hash_table->key && right_node_id > hash_table->key) {
-			create_node_hash_table(node->right, hash_table->key, hash_table->value);
-		} else if (node_id_next <= hash_table_next->key && right_node_id_next > hash_table_next->key) {
-			if (hash_table_next->parent != NULL) 
-				hash_table_next->parent->next = hash_table_next->next;
-
-			if (hash_table_next->next != NULL)
-				hash_table_next->next->parent = hash_table_next->parent;
-
-			add_nht_node(node->right, hash_table_next);
-		}*/
 		if (right_node_id <= hash_table->key) {
 			create_node_hash_table(node->right, hash_table->key, hash_table->value);
 			if (node->right->right->id <= hash_table->key)
 				delete_nht(node, hash_table);
 		}
 		hash_table = hash_table->next;
-		//hash_table_next = hash_table_next->next;
 	}
-
-	/*hash_table = node->hash_table;
-	while (hash_table != NULL) {
-		node_id = node->id;
-		right_node_id = node->right->id;
-		node_id_next = node->right->id;
-		right_node_id_next = node->right->right->id;
-
-		if (node_id > right_node_id)
-			right_node_id = KEYSPACE;
-
-		if () 
-
-		}
-		hash_table = hash_table->next;
-	}*/
-
-	/*node = first;
-	hash_table = node->hash_table;
-	while (hash_table != NULL) {
-		node_id = node->id;
-		right_node_id = node->right->id;
-
-		if (node_id > right_node_id)
-			right_node_id = KEYSPACE;
-
-		if (node_id <= hash_table->key && right_node_id > hash_table->key) {
-			create_node_hash_table(node->left, hash_table->key, hash_table->value);
-		}
-		hash_table = hash_table->next;
-	}*/
 
 	list_node->number_node++;
-}
-
-//Node
-void create_node(List_node *list_node, int space, int border)
-{
-	Node *node = malloc(sizeof(Node));
-	if (node == NULL)
-		return;
-
-	node->right = node;
-	node->left = node;
-	node->id = space;
-	node->border = border;
-	node->hash_table = NULL;
-
-	if (list_node->first_node == NULL) {
-		list_node->first_node = node;
-	} else {
-		add_node_to_list(list_node->first_node, node);
-	}
-}
-
-void add_node_to_list(Node *first_node, Node* node)
-{
-	if (first_node != NULL) {
-		first_node->left->right = node;
-		node->left = first_node->left;
-		first_node->left = node;
-		node->right = first_node;
-	}
-}
-
-Node* search_key_in_node(List_node *list_node, int key, int act)
-{
-	Node *node = list_node->first_node;
-	int node_id, right_node_id;
-
-	for (int i = 0; i < list_node->number_node; i++)
-	{
-		node_id = node->id;
-		right_node_id = node->right->id;
-		if (right_node_id == 0)
-			right_node_id = KEYSPACE;
-
-		if (node_id <= key && right_node_id > key) {
-			if (search_key_in_table(node, key) == NULL) {
-				return node;
-			} else if (act == 1) {
-				printf("Key already exists\n");
-				return NULL;
-			} else if (act == 2) {
-				return node;
-			}
-		}
-		node = node->right;
-	}
-	return NULL;
-}
-
-void free_node(Node *node)
-{
-	Hash_table* hash_table = node->hash_table;
-
-	if (node->right != NULL)
-		node->right->left = node->left;
-	if (node->left != NULL) 
-		node->left->right = node->right;
-
-	node->right = NULL;
-	node->left = NULL;
-
-	if (hash_table != NULL)
-		node->hash_table = hash_table->next;
-
-	if (node->hash_table != NULL)
-		node->hash_table->parent = NULL;
-
-	while (hash_table != NULL) {
-		free_hash_table(hash_table);
-
-		hash_table = node->hash_table;
-
-		if (hash_table != NULL)
-			node->hash_table = hash_table->next;
-
-		if (node->hash_table != NULL)
-			node->hash_table->parent = NULL;
-	}
-	//free(node);
-}
-
-//Print
-void print_dht(List_node* list_node)
-{
-	Node* node = list_node->first_node;
-
-	printf("\n///Print DHT///\n");
-
-	for (int i = 0; i < list_node->number_node && node != NULL; i++)
-	{
-		printf("%p\t", node->left);
-		printf("%p\t", node);
-		printf("%p\t", node->right);
-		printf("%d\t", node->id);
-		printf("%d\t", node->border);
-
-		if (node->hash_table != NULL) {
-			printf("\nHash_table\n");
-			Hash_table *hash_table = node->hash_table;
-			while (hash_table != NULL) {
-				printf("%d\t%s\n", hash_table->key, hash_table->value);
-				hash_table = hash_table->next;
-			}
-		}
-		printf("\n");	
-		node = node->right;
-	}
 }

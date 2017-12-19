@@ -2,8 +2,6 @@
 
 int main(int argc, char *argv[])
 {
-	//menu();
-
 	List_node *list_node = create_list_node(7);
 	print_dht(list_node);
 
@@ -15,39 +13,19 @@ int main(int argc, char *argv[])
 	add_value(list_node, "tee1");
 	add_value(list_node, "t2");
 	add_value(list_node, "t7");
-
 	print_dht(list_node);
 
 	delete_node(list_node, 1);
 	print_dht(list_node);
 
-	//delete_node(list_node, 1);
-	//print_dht(list_node);
-
-	/*info_first_node(list_node);
-
-	change_first_node(list_node, 2);
-	info_first_node(list_node);*/
 	add_node(list_node);
 	print_dht(list_node);
 
 	add_node(list_node);
 	print_dht(list_node);
 
-	add_node(list_node);
-	print_dht(list_node);
+	search_value(list_node, argv[1]);
 
-	add_node(list_node);
-	print_dht(list_node);
-
-	add_node(list_node);
-	print_dht(list_node);
-	//add_node(list_node);
-	//print_dht(list_node);
-	
-	//add_node(list_node);
-	//print_dht(list_node);
-
-	//search_value(list_node, argv[1]);
+	info_first_node(list_node);
 	return 0;
 }

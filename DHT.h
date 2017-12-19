@@ -1,14 +1,11 @@
 #ifndef DHT_H
 #define DHT_H
 
-#include <ncurses.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
 #define KEYSPACE 999
-
-void menu();
 
 typedef struct List_node
 {
@@ -54,7 +51,6 @@ void add_value(List_node*, char*);
 void add_node_hash_table(Node*);
 Hash_table* search_key_in_table(Node*, int);
 void free_hash_table(Hash_table*);
-void add_nht_node(Node*, Hash_table*);
 void delete_nht(Node*, Hash_table*);
 
 

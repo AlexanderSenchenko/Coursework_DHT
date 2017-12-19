@@ -8,7 +8,6 @@ int hash(char* value)
 		sum += (value[i] * i);
 	}
 	sum = sum % KEYSPACE;
-	//printf("%d\n", sum);
 	return sum;
 }
 
@@ -39,7 +38,6 @@ void create_node_hash_table(Node *node, int key, char* value)
 void add_value(List_node *list_node, char *value)
 {
 	int key = hash(value);
-	//printf("%d\n", key);
 
 	Node* node = search_key_in_node(list_node, key, 1);
 	if (node == NULL) {
@@ -63,20 +61,7 @@ void free_hash_table(Hash_table* hash_table)
 {
 	hash_table->next = NULL;
 	hash_table->parent = NULL;
-	//free(hash_table->value);
 	free(hash_table);
-}
-
-void add_nht_node(Node* node, Hash_table* hash_table)
-{
-	Hash_table* node_hash_table = node->hash_table;
-	while (node_hash_table != NULL) {
-		node_hash_table = node_hash_table->next;
-	}
-
-	hash_table->parent = node_hash_table;
-	hash_table->next = NULL;
-	node_hash_table->next = hash_table;
 }
 
 void delete_nht(Node* node, Hash_table* hash_table)
@@ -89,9 +74,6 @@ void delete_nht(Node* node, Hash_table* hash_table)
 
 	if (hash_table->next == NULL && hash_table->parent == NULL)
 		node->hash_table = NULL;
-
-	/*if (hash_table != NULL)
-		free(hash_table->value);*/
 
 	hash_table->next = NULL;
 	hash_table->parent = NULL;
